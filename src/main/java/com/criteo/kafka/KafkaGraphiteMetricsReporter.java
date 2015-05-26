@@ -117,7 +117,6 @@ public class KafkaGraphiteMetricsReporter implements KafkaMetricsReporter,
         final MetricRegistry registry = new MetricRegistry();
         return GraphiteReporter.forRegistry(registry)
                                .prefixedWith(graphiteGroupPrefix)
-                               .filter(MetricFilter.ALL)
                                .build(graphite);
     }
 
