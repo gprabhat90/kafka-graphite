@@ -26,7 +26,6 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.graphite.Graphite;
 import com.codahale.metrics.graphite.GraphiteReporter;
 import kafka.metrics.KafkaMetricsReporterMBean;
-import com.yammer.metrics.Metrics;
 import org.apache.log4j.Logger;
 import kafka.metrics.KafkaMetricsConfig;
 import kafka.metrics.KafkaMetricsReporter;
