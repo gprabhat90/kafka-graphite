@@ -21,6 +21,12 @@
           <groupId>org.apache.kafka</groupId>
           <artifactId>kafka_2.10</artifactId>
           <version>0.8.2.1</version>
+          <exclusions>
+              <exclusion>
+                  <artifactId>metrics-core</artifactId>
+                  <groupId>com.yammer.metrics</groupId>
+              </exclusion>
+          </exclusions>
       </dependency>
 
       <dependency>
@@ -59,7 +65,7 @@
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
-      <version>2.9.2</version>
+      <version>2.10.1</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
@@ -161,7 +167,7 @@
         <version>2.9</version>
         <configuration>
           <downloadSources>true</downloadSources>
-          <downloadJavadocs>true</downloadJavadocs>
+          <downloadJavadocs>false</downloadJavadocs>
         </configuration>
       </plugin>
 
