@@ -25,6 +25,7 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.graphite.Graphite;
 import com.codahale.metrics.graphite.GraphiteReporter;
+import kafka.metrics.KafkaMetricsReporterMBean;
 import com.yammer.metrics.Metrics;
 import com.yammer.metrics.core.MetricPredicate;
 import org.apache.log4j.Logger;
@@ -85,7 +86,7 @@ public class KafkaGraphiteMetricsReporter implements KafkaMetricsReporter,
             graphiteGroupPrefix = props.getString("kafka.graphite.metrics.group", GRAPHITE_DEFAULT_PREFIX);
             String regex = props.getString("kafka.graphite.metrics.exclude.regex", null);
 
-            LOG.debug("Initialize GraphiteReporter ["+graphiteHost+","+graphitePort+","+graphiteGroupPrefix+"]");
+            LOG.info("Initialize GraphiteReporter ["+graphiteHost+","+graphitePort+","+graphiteGroupPrefix+"]");
 
             if (regex != null) {
             	predicate = new RegexMetricPredicate(regex);
