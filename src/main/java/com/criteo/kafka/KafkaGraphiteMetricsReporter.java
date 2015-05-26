@@ -21,17 +21,15 @@ package com.criteo.kafka;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
-
+import com.codahale.metrics.MetricFilter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.graphite.Graphite;
+import com.codahale.metrics.graphite.GraphiteReporter;
 import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.Metric;
-import com.yammer.metrics.core.MetricName;
 import com.yammer.metrics.core.MetricPredicate;
-import com.yammer.metrics.reporting.GraphiteReporter;
-
+import org.apache.log4j.Logger;
 import kafka.metrics.KafkaMetricsConfig;
 import kafka.metrics.KafkaMetricsReporter;
-import kafka.metrics.KafkaMetricsReporterMBean;
 import kafka.utils.VerifiableProperties;
 
 public class KafkaGraphiteMetricsReporter implements KafkaMetricsReporter,
@@ -67,18 +65,12 @@ public class KafkaGraphiteMetricsReporter implements KafkaMetricsReporter,
 	@Override
 	public synchronized void stopReporter() {
 		if (initialized && running) {
-			reporter.shutdown();
+			reporter.stop();
 			running = false;
 			LOG.info("Stopped Kafka Graphite metrics reporter");
             try {
-            	reporter = new GraphiteReporter(
-            			Metrics.defaultRegistry(),
-            			graphiteHost,
-            			graphitePort,
-            			graphiteGroupPrefix/*,
-            			predicate*/
-            			);
-            } catch (IOException e) {
+            	reporter = buildGraphiteReporter();
+            } catch (Exception e) {
             	LOG.error("Unable to initialize GraphiteReporter", e);
             }
 		}
@@ -99,14 +91,16 @@ public class KafkaGraphiteMetricsReporter implements KafkaMetricsReporter,
             	predicate = new RegexMetricPredicate(regex);
             }
             try {
-            	reporter = new GraphiteReporter(
+
+            	/*reporter = new GraphiteReporter(
             			Metrics.defaultRegistry(),
             			graphiteHost,
             			graphitePort,
-            			graphiteGroupPrefix/*,
-            			predicate*/
-            			);
-            } catch (IOException e) {
+            			graphiteGroupPrefix*//*,
+            			predicate*//*
+            			);*/
+                reporter=buildGraphiteReporter();
+            } catch (Exception e) {
             	LOG.error("Unable to initialize GraphiteReporter", e);
             }
             if (props.getBoolean("kafka.graphite.metrics.reporter.enabled", false)) {
@@ -116,4 +110,14 @@ public class KafkaGraphiteMetricsReporter implements KafkaMetricsReporter,
             }
         }
 	}
+
+    public GraphiteReporter buildGraphiteReporter(){
+        final Graphite graphite = new Graphite(graphiteHost,graphitePort);
+        final MetricRegistry registry = new MetricRegistry();
+        return GraphiteReporter.forRegistry(registry)
+                               .prefixedWith(graphiteGroupPrefix)
+                               .filter(MetricFilter.ALL)
+                               .build(graphite);
+    }
+
 }
