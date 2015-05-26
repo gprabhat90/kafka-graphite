@@ -27,7 +27,6 @@ import com.codahale.metrics.graphite.Graphite;
 import com.codahale.metrics.graphite.GraphiteReporter;
 import kafka.metrics.KafkaMetricsReporterMBean;
 import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.MetricPredicate;
 import org.apache.log4j.Logger;
 import kafka.metrics.KafkaMetricsConfig;
 import kafka.metrics.KafkaMetricsReporter;
@@ -47,7 +46,6 @@ public class KafkaGraphiteMetricsReporter implements KafkaMetricsReporter,
     String graphiteHost = GRAPHITE_DEFAULT_HOST;
     int graphitePort = GRAPHITE_DEFAULT_PORT;
     String graphiteGroupPrefix = GRAPHITE_DEFAULT_PREFIX;
-    MetricPredicate predicate = MetricPredicate.ALL;
 
 	@Override
 	public String getMBeanName() {
@@ -86,11 +84,8 @@ public class KafkaGraphiteMetricsReporter implements KafkaMetricsReporter,
             graphiteGroupPrefix = props.getString("kafka.graphite.metrics.group", GRAPHITE_DEFAULT_PREFIX);
             String regex = props.getString("kafka.graphite.metrics.exclude.regex", null);
 
-            LOG.info("Initialize GraphiteReporter ["+graphiteHost+","+graphitePort+","+graphiteGroupPrefix+"]");
+            LOG.info("Initialize GraphiteReporter [" + graphiteHost + "," + graphitePort + "," + graphiteGroupPrefix + "]");
 
-            if (regex != null) {
-            	predicate = new RegexMetricPredicate(regex);
-            }
             try {
 
             	/*reporter = new GraphiteReporter(
