@@ -117,6 +117,8 @@ public class KafkaGraphiteMetricsReporter implements KafkaMetricsReporter,
         final MetricRegistry registry = new MetricRegistry();
         return GraphiteReporter.forRegistry(registry)
                                .prefixedWith(graphiteGroupPrefix)
+                               .convertRatesTo(TimeUnit.SECONDS)
+                               .convertDurationsTo(TimeUnit.MILLISECONDS)
                                .build(graphite);
     }
 
